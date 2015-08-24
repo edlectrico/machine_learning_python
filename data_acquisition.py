@@ -48,7 +48,10 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
 	source = open(file_path, 'r').read() 		# Reading each html file to extract the desired value
 
 	try:
-	  value = source.split(gather + split_before_value)[1].split(split_after_value)[0] # Split by 'gather' term	  
+	  try:
+            value = source.split(gather + split_before_value)[1].split(split_after_value)[0] # Split by 'gather' term  
+          except Exception as e:
+	    print str(e), ticker, file
 	  try:
 	    sp500_date = datetime.fromtimestamp(unix_time).strftime('%Y-%m-%d')
 	    row = sp500_df[(sp500_df.index == sp500_date)]
@@ -75,13 +78,7 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
                           'SP500':sp500_value,'sp500_p_change':sp500_p_change,
 			  'Difference':stock_p_change - sp500_p_change},
 			   ignore_index = True)
-
-	except IndexError:
-	  print "Can't get value from %s" %file_path
-	  pass
-       
-        except ValueError:
-	  print "Can't convert string to float " 
+	except Exception as e:
 	  pass
 
       time.sleep(15)
