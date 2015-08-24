@@ -19,7 +19,8 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
 				'Ticker','DE Ratio', 
 				'Price','stock_p_change',
 				'SP500','sp500_p_change'])
-  
+
+  # https://www.quandl.com/data/YAHOO/INDEX_GSPC-S-P-500-Index  
   sp500_df = pd.DataFrame.from_csv(data_dir + "YAHOO-INDEX_GSPC.csv")
   ticker_list = []
   
