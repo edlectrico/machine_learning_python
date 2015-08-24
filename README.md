@@ -7,9 +7,11 @@ Several examples combining Python and Scikit.
  - Matplotlib
  - Scikit
  - Numpy
+ - Pandas
 ```
-pip install numpy
-pip install scipy
 pip install matplotlib
 pip install scikit-learn
+pip install scipy
+pip install numpy
+pip install pandas
 ```
