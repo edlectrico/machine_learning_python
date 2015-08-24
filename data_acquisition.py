@@ -3,6 +3,13 @@ import pandas as pd
 import os
 import time # filenames are dates
 from datetime import datetime
+# visualization
+from time import mktime
+import matplotlib
+import matplotlib.pyplot as pl
+from matplotlib import style
+style.use("dark_background")
+import re
 
 data_dir = "/home/edlectrico/Downloads/"
 path = data_dir + "intraQuarter" 			# data folder
@@ -18,7 +25,8 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
   df = pd.DataFrame(columns = ['Date','Unix',
 				'Ticker','DE Ratio', 
 				'Price','stock_p_change',
-				'SP500','sp500_p_change'])
+				'SP500','sp500_p_change',
+				'Difference'])
 
   # https://www.quandl.com/data/YAHOO/INDEX_GSPC-S-P-500-Index  
   sp500_df = pd.DataFrame.from_csv(data_dir + "YAHOO-INDEX_GSPC.csv")
@@ -64,13 +72,32 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
 	  df = df.append({'Date':date_stamp,'Unix':unix_time,
                           'Ticker':ticker,'DE Ratio':value,
                           'Price':stock_price,'stock_p_change':stock_p_change,
-                          'SP500':sp500_value,'sp500_p_change':sp500_p_change},
+                          'SP500':sp500_value,'sp500_p_change':sp500_p_change,
+			  'Difference':stock_p_change - sp500_p_change},
 			   ignore_index = True)
 
 	except IndexError:
 	  print "Can't get value from %s" %file_path
+	  pass
+       
+        except ValueError:
+	  print "Can't convert string to float " 
+	  pass
 
       time.sleep(15)
+
+  for each_ticker in ticker_list:
+    try:
+      plot_df = df[(df['Ticker'] == each_ticker)]
+      plot_df = plot_df.set_index(['Date'])
+      plot_df['Difference'].plot(label=each_ticker)
+      pl.legend()
+
+    except:
+      pass
+
+  pl.show()
+
   save = gather.replace(' ','').replace(')','').replace('(','').replace('/','')+('.csv')
   print save
   df.to_csv(save)
