@@ -15,14 +15,22 @@ split_after_stock = '</b></big>'
 def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website there
   statspath = path+'/_KeyStats'				# will be a "Total Debt/Equity (mrq)" field
   stock_list = [x[0] for x in os.walk(statspath)]	# for each file in path...
-  df = pd.DataFrame(columns = ['Date','Unix','Ticker','DE Ratio'])
+  df = pd.DataFrame(columns = ['Date','Unix',
+				'Ticker','DE Ratio', 
+				'Price','stock_p_change',
+				'SP500','sp500_p_change'])
   
   sp500_df = pd.DataFrame.from_csv(data_dir + "YAHOO-INDEX_GSPC.csv")
+  ticker_list = []
   
-  for each_dir in stock_list[1:]: 			# stock_list[0] points at the root directory...
+  for each_dir in stock_list[1:25]: 			# stock_list[0] points at the root directory...
     each_file = os.listdir(each_dir)
     ticker = each_dir.split(path + '/_KeyStats/')[1] 	# home/edlectrico/Downloads/intraQuarter/_KeyStats/
-    
+    ticker_list.append(ticker)
+
+    starting_stock_value = False
+    starting_sp500_value = False    
+
     if len(each_file) > 0:
       for file in each_file:
         date_stamp = datetime.strptime(file, '%Y%m%d%H%M%S.html') # The format of the file's name
@@ -42,14 +50,22 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
             sp500_value = float(row["Adjusted Close"]) 
 
 	  stock_price = float(source.split(split_before_stock)[1].split(split_after_stock)[0])
+	  
+	  if not starting_stock_value:
+	    starting_stock_value = stock_price
+	  if not starting_sp500_value:
+	    starting_sp500_value = sp500_value
+
+	  stock_p_change = ((stock_price - starting_stock_value) / starting_stock_value) * 100
+	  sp500_p_change = ((sp500_value - starting_sp500_value) / starting_sp500_value) * 100
 
 	  # Finally assign the values to the DataFrame columns
-	  df = df.append({'Date':date_stamp,
-                                    'Unix':unix_time,
-                                    'Ticker':ticker,
-                                    'DE Ratio':value,
-                                    'Price':stock_price,
-                                    'SP500':sp500_value}, ignore_index = True)
+	  df = df.append({'Date':date_stamp,'Unix':unix_time,
+                          'Ticker':ticker,'DE Ratio':value,
+                          'Price':stock_price,'stock_p_change':stock_p_change,
+                          'SP500':sp500_value,'sp500_p_change':sp500_p_change},
+			   ignore_index = True)
+
 	except IndexError:
 	  print "Can't get value from %s" %file_path
 
