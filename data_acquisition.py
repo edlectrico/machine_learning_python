@@ -1,4 +1,4 @@
-# Data acquired from http://pythonprogramming.net/downloads/intraQuarter.zip
+# Data aquired from http://pythonprogramming.net/downloads/intraQuarter.zip
 import pandas as pd
 import os
 import time # filenames are dates
@@ -16,7 +16,7 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
     each_file = os.listdir(each_dir)
     # print 'each_dir: ' + str(each_dir)
     # print 'each_file: ' + str(each_file)
-    ticker = each_dir.split('home/edlectrico/Downloads/intraQuarter/_KeyStats/')[1] # home/edlectrico/Downloads/intraQuarter/_KeyStats/
+    ticker = each_dir.split(path + '/_KeyStats/')[1] # home/edlectrico/Downloads/intraQuarter/_KeyStats/
     print 'ticker: ' + str(ticker)
     if len(each_file) > 0:
       for file in each_file:
@@ -24,10 +24,11 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
         unix_time = time.mktime(date_stamp.timetuple())
         # print date_stamp, unix_time
         file_path = each_dir + '/' + file
-	source = open(file_path, 'r').read()	# Storing the full html file
+	source = open(file_path, 'r').read()	# Reading the full html file to extract the desired value
 	print file_path
 	try:
-	  value = source.split(gather + ':</td><td class="yfnc_tabledata1">')[1].split('</td>')[0] # Splitting by 'gather' term
+	  value = source.split(gather + ':</td><td class="yfnc_tabledata1">')[1].split('</td>')[0] # Split by 'gather' term
+	  # Finally assign the values to the DataFrame columns
 	  df = df.append({'Date':date_stamp,'Unix':unix_time,'Ticker':ticker,'DE Ratio':value,}, ignore_index = True)
 	  print ticker + ":" + str(value)
 	except IndexError:
