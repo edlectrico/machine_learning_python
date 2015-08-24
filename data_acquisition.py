@@ -1,7 +1,7 @@
 # Data acquired from http://pythonprogramming.net/downloads/intraQuarter.zip
 import pandas as pd
 import os
-import time # files' names are dates
+import time # filenames are dates
 from datetime import datetime
 
 path = "/home/edlectrico/Downloads/intraQuarter" 	# the unziped folder path
@@ -28,11 +28,14 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
 	print file_path
 	try:
 	  value = source.split(gather + ':</td><td class="yfnc_tabledata1">')[1].split('</td>')[0] # Splitting by 'gather' term
+	  df = df.append({'Date':date_stamp,'Unix':unix_time,'Ticker':ticker,'DE Ratio':value,}, ignore_index = True)
 	  print ticker + ":" + str(value)
 	except IndexError:
 	  print "Can't get value from %s" %file_path
 
       time.sleep(15)
+  save = gather.replace(' ','').replace(')','').replace('(','').replace('/','')+('.csv')
+  print save
+  df.to_csv(save)
 
 Key_Stats()
-    
