@@ -44,7 +44,12 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
 	  stock_price = float(source.split(split_before_stock)[1].split(split_after_stock)[0])
 
 	  # Finally assign the values to the DataFrame columns
-	  df = df.append({'Date':date_stamp,'Unix':unix_time,'Ticker':ticker,'DE Ratio':value,}, ignore_index = True)
+	  df = df.append({'Date':date_stamp,
+                                    'Unix':unix_time,
+                                    'Ticker':ticker,
+                                    'DE Ratio':value,
+                                    'Price':stock_price,
+                                    'SP500':sp500_value}, ignore_index = True)
 	except IndexError:
 	  print "Can't get value from %s" %file_path
 
