@@ -26,7 +26,7 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
 				'Ticker','DE Ratio', 
 				'Price','stock_p_change',
 				'SP500','sp500_p_change',
-				'Difference'])
+				'Difference', 'Status'])
 
   # https://www.quandl.com/data/YAHOO/INDEX_GSPC-S-P-500-Index  
   sp500_df = pd.DataFrame.from_csv(data_dir + "YAHOO-INDEX_GSPC.csv")
@@ -85,12 +85,19 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
 	  stock_p_change = ((stock_price - starting_stock_value) / starting_stock_value) * 100
 	  sp500_p_change = ((sp500_value - starting_sp500_value) / starting_sp500_value) * 100
 
+	  difference = stock_p_change - sp500_p_change
+
+	  if (difference > 0):
+	    status = "outperform"
+	  else:
+	    status = "underperform"
+
 	  # Finally assign the values to the DataFrame columns
 	  df = df.append({'Date':date_stamp,'Unix':unix_time,
                           'Ticker':ticker,'DE Ratio':value,
                           'Price':stock_price,'stock_p_change':stock_p_change,
                           'SP500':sp500_value,'sp500_p_change':sp500_p_change,
-			  'Difference':stock_p_change - sp500_p_change},
+			  'Difference':difference, 'Status':status},
 			   ignore_index = True)
 	except Exception as e:
 	  pass
@@ -101,13 +108,20 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
     try:
       plot_df = df[(df['Ticker'] == each_ticker)]
       plot_df = plot_df.set_index(['Date'])
-      plot_df['Difference'].plot(label=each_ticker)
+
+      if (plot_df['Status'][-1] == "underperform") # -1 for the last one
+	color = 'r'
+      else:
+	color = 'g'
+
+      plot_df['Difference'].plot(label = each_ticker, color = color)
       pl.legend()
 
     except:
       pass
 
   pl.show()
+  pl.savefig('out/plot.pdf')
 
   save = gather.replace(' ','').replace(')','').replace('(','').replace('/','')+('.csv')
   print save
