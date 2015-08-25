@@ -32,7 +32,7 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
   sp500_df = pd.DataFrame.from_csv(data_dir + "YAHOO-INDEX_GSPC.csv")
   ticker_list = []
   
-  for each_dir in stock_list[1:]: 			# stock_list[0] points at the root directory...
+  for each_dir in stock_list[1:25]: 			# stock_list[0] points at the root directory...
     each_file = os.listdir(each_dir)
     ticker = each_dir.split(path + '/_KeyStats/')[1] 	# home/edlectrico/Downloads/intraQuarter/_KeyStats/
     ticker_list.append(ticker)
@@ -109,7 +109,7 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
       plot_df = df[(df['Ticker'] == each_ticker)]
       plot_df = plot_df.set_index(['Date'])
 
-      if (plot_df['Status'][-1] == "underperform") # -1 for the last one
+      if (plot_df['Status'][-1] == "underperform"): # -1 for the last one
 	color = 'r'
       else:
 	color = 'g'
