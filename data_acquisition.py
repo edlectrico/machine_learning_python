@@ -32,7 +32,7 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
   sp500_df = pd.DataFrame.from_csv(data_dir + "YAHOO-INDEX_GSPC.csv")
   ticker_list = []
   
-  for each_dir in stock_list[1:25]: 			# stock_list[0] points at the root directory...
+  for each_dir in stock_list[1:]: 			# stock_list[0] points at the root directory...
     each_file = os.listdir(each_dir)
     ticker = each_dir.split(path + '/_KeyStats/')[1] 	# home/edlectrico/Downloads/intraQuarter/_KeyStats/
     ticker_list.append(ticker)
@@ -49,9 +49,14 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
 
 	try:
 	  try:
-            value = source.split(gather + split_before_value)[1].split(split_after_value)[0] # Split by 'gather' term  
+            value = float(source.split(gather + split_before_value)[1].split(split_after_value)[0]) # Split by 'gather' term  
           except Exception as e:
-	    print str(e), ticker, file
+	    try:
+	      value = float(source.split(gather + ':</td>\n<td class="ynfc_tabledata1">')[1].split(split_after_value)[0])
+	      print str(e), ticker, file
+	    except Exception as e:
+	      pass
+
 	  try:
 	    sp500_date = datetime.fromtimestamp(unix_time).strftime('%Y-%m-%d')
 	    row = sp500_df[(sp500_df.index == sp500_date)]
@@ -60,9 +65,18 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):	# In the data from each website
             sp500_date = datetime.fromtimestamp(unix_time-259200).strftime('%Y-%m-%d') # 3 days in seconds (avoid weekends)
             row = sp500_df[(sp500_df.index == sp500_date)]
             sp500_value = float(row["Adjusted Close"]) 
+	
+	  try:
+	    stock_price = float(source.split(split_before_stock)[1].split(split_after_stock)[0])
+	  except Exception as e:
+	    try:
+	      stock_price = (source.split(split_before_stock)[1].split(split_after_stock)[0])
+	      stock_price = re.search(r'(\d{1,8}\.\d{1,8})', stock_price) # Search for a digit with a length between 1 and 8 with a period (\.) followed by a digit
+	      stock_price = float(stock_price.group(1))
+	    except Exception as e:
+	      stock_price = (source.split('<span class="time_rtq_ticker">')[1].split('</span>')[0])
+	   	  
 
-	  stock_price = float(source.split(split_before_stock)[1].split(split_after_stock)[0])
-	  
 	  if not starting_stock_value:
 	    starting_stock_value = stock_price
 	  if not starting_sp500_value:
