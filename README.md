@@ -16,4 +16,4 @@ pip install numpy
 pip install pandas
 ```
 
-Some data is probably missing. For instance, Apple data is not displayed in the plot. This probably deals with problems parsing each html file. However, it is a good example of how Python can help us to handle data with scikit and pandas.
+Some data is probably missing. For instance, Apple data is not displayed in the plot. This probably deals with problems parsing each html file. However, it is a good example of how Python can help us to handle data with scikit and pandas. Besides, most of the time spent in these tasks are related to acquiring and preparing/normalizing the data. 
