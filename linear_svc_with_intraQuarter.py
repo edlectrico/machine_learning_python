@@ -68,7 +68,7 @@ def Key_Stats(gather=["Total Debt/Equity",'Trailing P/E',
     # https://www.quandl.com/data/YAHOO/INDEX_GSPC-S-P-500-Index 
     sp500_df = pd.DataFrame.from_csv(data_dir + "YAHOO-INDEX_GSPC.csv")
 
-    for each_dir in stock_list[1:25]: # Only to 25 to keep it simple. We avoid the stock_list[0] because it points at the root directory
+    for each_dir in stock_list[1:]: # Only to 25 to keep it simple. We avoid the stock_list[0] because it points at the root directory
         ticker = each_dir.split(path + '/_KeyStats/')[1] # home/edlectrico/Downloads/intraQuarter/_KeyStats/
         each_file = os.listdir(each_dir)
         ticker_list.append(ticker)
